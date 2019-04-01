@@ -119,9 +119,137 @@ ${toc}
 
 ![](../resources/img/heap/img-13.png)
 
+Навіщо дерево повинно бути повністю заповнене:
+
+1. Швидкість операцій
+
+Асомптотична складність операцій на такому дереві буде $O(logn)$
+
+2. Зручно зберігати в місиві
+
+> В зележності від необхідності обходу в реалізаціях потрібно пам'ятати посилання на батька і/або дочірніх нодів.
+
+![](../resources/img/heap/img-14.png)
+
+```
+PARENT(i) = [i/2]
+LEFTCHILD(i) = 2i
+RIGHTCHILD(i) = 2i+1
+```
+
+> При реалізації потрібно враховувати вихід за рамки масива.
+
+Складність таких операцій $O(1)$
+
+
 ### Як  підтримувати дерево повністю заповненим?
 
+Операції, які можуть зламити повністю заповнене дерево:
+
+- Insert
+- ExtractMax
+
+Всі інші операції або не змінюються структуру дерева, або викликають операції Insert, ExtractMax
+
+- Insert
+
+Додавати вершини потрібно додавати вузол на пусте ліве місце:
+
+![](../resources/img/heap/img-16.png)
+
+
+- ExtractMax
+
+При обміні із корня із листом потрібно змінювати на крайній лівий лист:
+
+![](../resources/img/heap/img-17.png)
+
+
+
 ## Реалізація двійкової кучі
+
+![](../resources/img/heap/img-15.png)
+
+**Функції знаходження дочірніх і батьківських елементів**:
+
+```
+PARENT(i):
+    return [i/2]
+
+LEFTCHILD(i):
+    return 2i
+
+RIGHTCHILD(i)
+    return 2i+1
+```
+
+**Функції просіювання**:
+
+```
+SHIFTUP(i):
+    while i>1 and H[PARENT(i)]<H[i]
+    swap H[PARENT(i)] and H[i]
+    i:=PARENT(i)
+```
+
+```
+SHIFTDOWN(i):
+    maxIndex:=i
+    l:=LEFTCHILD(i)
+    if l<=size and H[l]>H[maxIndex]:
+        maxIndex:=l
+    r:=RIGHTCHILD(i)
+    if r<=size and H[r]>H[maxIndex]:
+        maxIndex:=r
+    if i!=maxIndex:
+        swap H[i] and H[maxIndex]
+        SHIFTDOWN(maxIndex)
+```
+
+**Функція вставки**:
+
+```
+INSERT(p):
+    if size=maxSize:
+        return ERROR
+    size:=size+1
+    H[size]:=p
+    SHIFTUP(size)
+```
+
+**Функція повернення максимума**:
+
+```
+EXTRACTMAX():
+    result:=H[1]
+    H[1]:=H[size]
+    size:=size-1
+    SHIFTDOWN(1)
+    return result
+```
+
+**Функція видалення**:
+
+```
+REMOVE(i):
+    H[i]:=10000000
+    SHIFTUP(i)
+    EXTRACTMAX
+```
+
+**Функція зміни пріорітета**:
+
+```
+CHENGEPRIORITY(i,p):
+    oldp:=H[i]
+    H[i]:=p
+    if p>oldp:
+        SHIFTUP(i)
+    else:
+        SHIFTDOWN(i)
+```
+
+
 
 ## Переваги двійкової кучі
 
@@ -149,6 +277,8 @@ ${toc}
 Heap sort активно використовується в ядрі [лінукс](https://elixir.bootlin.com/linux/latest/source/lib/sort.c)
 
 # STL priority_queue
+
+**Пріоритетні черги(STL priority_queue)** - це тип контейнерних адаптерів, спеціально розроблених таким чином, що перший елемент черги є найбільшим з усіх елементів у черзі, а інші елементи знаходяться в порядку зменшення (отже, ми бачимо, що кожен елемент черги має пріоритет фіксованого порядку).
 
 # Домашнє завдання
 
